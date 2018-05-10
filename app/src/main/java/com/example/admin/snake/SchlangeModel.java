@@ -1,151 +1,90 @@
 package com.example.admin.snake;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.util.Log;
-import android.view.SurfaceHolder;
+import java.util.LinkedList;
 
-import java.util.Timer;
-import java.util.TimerTask;
+
+import android.graphics.Point;
+import android.util.Log;
 
 /*
-Das Model der Schlange
+
  */
 
-public class SchlangeModel implements SurfaceHolder.Callback {
+public class SchlangeModel {
 
-   private Timer timer;
-   private boolean pause;
-   private TimerTask timertask;
-   private  int aktLängeSchlange = 1;
-   private static final int maxlänge = 1000;
-   private static int[] koordX = new int[maxlänge];
-   private static int[] koordY = new int[maxlänge];
-   private MainActivity mainActivity;
-   private Richtung richtung;
-
-
+   private LinkedList<Point> snake = new LinkedList<Point>();
    private SchlangeController schlangeController;
-   private SpielFeld spielFeld;
-   private  SchlangeView schlangeView;
+   private final int feldHöhe=30;
+   private final int feldBreite=30;
+   private Futter futter;
+   private int futterX;
+   private int futterY;
+   private int aktuellePunkte =0;
+   private Punkte punkte;
+
 
    public SchlangeModel(Context context) {
-       mainActivity = (MainActivity) context;
-       schlangeController = new SchlangeController(context);
-       spielFeld = new SpielFeld(context);
+       futter = new Futter();
+       futter.zufälligesEssen();
        startPunktSchlange();
-       bewegungSchlange();
+       punkte = new Punkte(context);
    }
 
     public void startPunktSchlange() {
-        koordX[0] = (int)(Math.random()*(spielFeld.getBreite()-2)+1);
-        koordY[0] = (int)(Math.random()*(spielFeld.getHöhe()-2)+1);
-
-        Log.v("KoodinateX",""+koordX[0]);
-        Log.v("KoodinateY",""+koordY[0]);
+       int randomX = (int) (Math.random() * (feldBreite-2)+1);
+       int randomY = (int) (Math.random()* (feldHöhe-2)+1);
+       snake.addFirst(new Point(randomX,randomY));
    }
 
-    public void bewegungSchlange() {
-        timer = new Timer();
+    public void bewegungSchlange(int richtungX, int richtungY) {
 
-        timertask = new TimerTask() {
-
-            @Override
-            public void run() {
-                pause= mainActivity.getPause();
-                mainActivity.runOnUiThread(new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        if (pause == false) {
-
-                            for (int i = aktLängeSchlange; i > 0; i--) {
-                                koordX[i] = koordX[i - 1];
-                                koordY[i] = koordY[i - 1];
-                                Log.v("Koodinate",""+koordX[i]);
-                               Log.v("Koodinate",""+koordY[i]);
-                            }
-                            RichtungÄndern();
-                            essen();
-
-                        }
-                    }
-                });
-            }
-        };
-
-        timer.schedule(timertask, 0, 150);
-    }
-
-    public void RichtungÄndern() {
-
-        richtung = schlangeController.getRichtung();
-        if (richtung != null) {
-            switch (richtung) {
-                case Hoch:
-                    koordY[0] = koordY[0] - 1;
-                    Log.v("KoorinateY", "" + koordX[0]);
-                    Log.v("KoodinateX", "" + koordY[0]);
-                    break;
-                case Unten:
-                    koordY[0] = koordY[0] + 1;
-                    break;
-                case Rechts:
-                    koordX[0] = koordX[0] + 1;
-                    break;
-                case Links:
-                    koordX[0] = koordX[0] - 1;
-                    break;
-            }
+        for (int i = snake.size() - 1; i > 0; i--) {
+           Point tmp = snake.get(i);
+            tmp.set(snake.get(i-1).x,snake.get(i-1).y);
         }
-    }
 
-    public void essen() {
-        //if(koordX[0]==FutterX && KoordY[0]==FutterY) {
+        snake.getFirst().x += richtungX;
+        snake.getFirst().y += richtungY;
+        essen();
+   }
 
-            aktLängeSchlange= aktLängeSchlange+1;
-            //Punkte = Punkte +1;
-            //zufälligerApfel();
-            //PunkteTextView.setText(""+Punkte);
-            //invalidate();
-       // }
-    }
+   public void essen() {
+       futterX = futter.getFutterX();
+       futterY = futter.getFutterY();
 
-    public boolean GameOver() {
+       if (snake.getFirst().x == futterX && snake.getFirst().y == futterY) { // eat Apple
+           snake.addLast(new Point());
+           futter.zufälligesEssen();
+           aktuellePunkte = aktuellePunkte+1;
+           punkte.setPunkte(aktuellePunkte);
+       }
+   }
 
-        for(int i=1; i<aktLängeSchlange; i++) {
-            if(koordX[0]==koordX[i] && koordY[0] == koordY[i])	{
-                timer.cancel();
-                return true;
+   public boolean gameOver() {
+
+        for(int i=1; i<snake.size(); i++) {
+                if (snake.getFirst().x == snake.get(i).x && snake.getFirst().y == snake.get(i).y) {
+                    return true;
+                }
             }
+
+        if (snake.getFirst().x < 0 || snake.getFirst().x > 29 || snake.getFirst().y < 0 || snake.getFirst().y > 29) {
+            return true;
         }
-        if(koordX[0]<0 || koordX[0]>29 || koordY[0]<0 ||koordY[0]>29 ) {
-
-            timer.cancel();
-            return	true;
-        }
-        return false;
+   return false;
     }
 
-    public int getAktLängeSchlange() {
-       return aktLängeSchlange;
+    public Punkte getPunkte() {
+       return punkte;
     }
 
-    public static int[] getKoordX() {
-       return koordX;
+    public Futter getFutter() {
+       return futter;
     }
 
-    public static int[] getKoordY() {
-       return koordY;
+    public LinkedList<Point> getSnake() {
+        return snake;
     }
 
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {}
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {}
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {}
 }

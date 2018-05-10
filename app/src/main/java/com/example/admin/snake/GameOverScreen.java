@@ -52,8 +52,9 @@ class ZeichenView extends View {
         p.setTextSize(200);
         canvas.drawText("Game Over",50,400,p);
         p.setTextSize(75);
-        canvas.drawText("Deine Punkte:"+Schlange.getPunkte(),300,600,p);
-        Schlange.setPunkte();
+
+        canvas.drawText("Deine Punkte:"+Punkte.getPunkte(),300,600,p);
+        Punkte.resetPunkte();
         }
    }
 }

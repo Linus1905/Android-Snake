@@ -1,5 +1,6 @@
 package com.example.admin.snake;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
@@ -17,60 +18,47 @@ public class MainActivity extends AppCompatActivity {
     private  Button rechts;
     private  Button unten;
     private  Button links;
-    //private Schlange schlange;
-    private TextView PunkteText;
-    private TextView PunkteTextView;
+    private TextView punkteText;
+    private TextView punkteTextView;
     private  MediaPlayer mp = new MediaPlayer();
-    private TextView HighscoreText;
-    private TextView HighscoreTextView;
-    private Timer timer;
-    private boolean Pause = false;
-    private int MediaPlayerStop;
+    private TextView highscoreText;
+    private TextView highscoreTextView;
+    private boolean pause = false;
+    private int mediaPlayerStop;
+
     private SchlangeView schlangeView;
     private SchlangeModel schlangeModel;
+    private SchlangeController schlangeController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        hoch = (Button) findViewById(R.id.button1);
-        rechts = (Button) findViewById(R.id.button2);
-        unten = (Button) findViewById(R.id.button3);
-        links = (Button) findViewById(R.id.button4);
-        PunkteText = (TextView) findViewById(R.id.textView1);
-        PunkteTextView = (TextView) findViewById(R.id.textView2);
-        HighscoreText = (TextView) findViewById(R.id.textView3);
-        HighscoreTextView = (TextView) findViewById(R.id.textView4);
+        hoch = (Button) findViewById(R.id.buttonhoch);
+        rechts = (Button) findViewById(R.id.buttonrechts);
+        unten = (Button) findViewById(R.id.buttonunten);
+        links = (Button) findViewById(R.id.buttonlinks);
+        punkteText = (TextView) findViewById(R.id.textView1);
+        punkteTextView = (TextView) findViewById(R.id.textView2);
+        highscoreText = (TextView) findViewById(R.id.textView3);
+        highscoreTextView = (TextView) findViewById(R.id.textView4);
 
-       /* schlange = new Schlange(this);                                                           // 1200
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(900, 900);
-        schlange.setLayoutParams(params);
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout1);
-        schlange.setBackgroundColor(Color.YELLOW);
-        layout.addView(schlange);
-        timer = schlange.getTimer();
-        initalisiereMediaPlayer();
-*/    // initalisiereMediaPlayer();
-       schlangeModel = new SchlangeModel(this);
        schlangeView = new SchlangeView(this);
        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(900, 900);
        schlangeView.setLayoutParams(params);
        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout1);
        schlangeView.setBackgroundColor(Color.YELLOW);
        layout.addView(schlangeView);
-       schlangeView.setOnClickListener(new SchlangeController(this));
-
-
-
     }
 
     public   Button  getHoch() { return hoch; }
     public  Button getRechts() { return rechts;}
     public  Button getUnten() { return unten; }
     public Button getLinks() { return links; }
-    public TextView getPunkteTextView() { return PunkteTextView;}
+    public TextView getPunkteTextView() { return punkteTextView;}
     public  MediaPlayer getMediaPlayer(){ return mp;}
-    public  TextView getHighscoreTextView(){return HighscoreTextView;}
-    public boolean getPause() { return Pause;}
+    public  TextView getHighscoreTextView(){return highscoreTextView;}
+    public boolean getPause() { return pause;}
 
 
     public void initalisiereMediaPlayer() {
@@ -85,22 +73,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart() {
         super.onRestart();
-        Pause = false;
-        //mp.seekTo(MediaPlayerStop);
-       // mp.start();
+        pause = false;
+        mp.seekTo(mediaPlayerStop);
+        mp.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Pause = true;
-       // mp.pause();
-      // MediaPlayerStop = mp.getCurrentPosition();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+        pause = true;
+        mp.pause();
+        mediaPlayerStop = mp.getCurrentPosition();
     }
 
     @Override

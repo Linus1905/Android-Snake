@@ -1,18 +1,24 @@
 package com.example.admin.snake;
 
+/*
+handles buton click and change direction
+of moving snake
+ */
+
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class SchlangeController implements View.OnClickListener {
+public class SchlangeController {//implements View.OnClickListener {
 
     private MainActivity mainActivity;
-    private Richtung richtung;
     private Button hoch;
     private Button rechts;
     private Button unten;
     private Button links;
+    private int richtungX;
+    private int richtungY;
+
 
     public SchlangeController(Context context) {
         mainActivity = (MainActivity) context;
@@ -21,34 +27,47 @@ public class SchlangeController implements View.OnClickListener {
         rechts = mainActivity.getRechts();
         unten = mainActivity.getUnten();
 
-        hoch.setOnClickListener(this);
-        rechts.setOnClickListener(this);
-        links.setOnClickListener(this);
-        unten.setOnClickListener(this);
+        hoch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              richtungY=-1;
+              richtungX=0;
+            }
+        });
+
+        rechts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                richtungY=0;
+                richtungX=1;
+            }
+        });
+
+        unten.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                richtungY=1;
+                richtungX=0;
+            }
+        });
+
+        links.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                richtungY=0;
+                richtungX=-1;
+            }
+        });
+
+
     }
 
-    @Override
-    public void onClick(View view) {
-
-        switch (view.getId()) {
-            case R.id.button1:
-                richtung = Richtung.Hoch;
-                Log.v("Richtung",""+richtung);
-
-                break;
-            case R.id.button2:
-                richtung = Richtung.Rechts;
-                break;
-            case R.id.button3:
-                richtung = Richtung.Unten;
-                break;
-            case R.id.button4:
-                richtung = Richtung.Links;
-                break;
-        }
+    public int getRichtungX() {
+        return richtungX;
     }
 
-    public Richtung getRichtung() {
-        return richtung;
+    public int getRichtungY() {
+        return richtungY;
     }
+
 }
