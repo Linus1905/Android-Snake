@@ -54,7 +54,7 @@ class ZeichenView extends View {
         p.setTextSize(75);
 
         canvas.drawText("Deine Punkte:"+Punkte.getPunkte(),300,600,p);
-        Punkte.resetPunkte();
+        //Punkte.resetPunkte();
         }
    }
 }

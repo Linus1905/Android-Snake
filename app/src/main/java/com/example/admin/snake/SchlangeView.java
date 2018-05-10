@@ -44,13 +44,18 @@ public class SchlangeView extends SurfaceView implements SurfaceHolder.Callback{
      highscoretextView = mainActivity.getHighscoreTextView();
      futter = schlangeModel.getFutter();
      schlangeController = new SchlangeController(context);
+     initialiesierPunkte();
      gameLoop();
-
-     punkteTextView.setText(""+0);
-     highscoretextView.setText(""+punkte.ladeHighscore());
     }
 
-private void verwaltePunkte() {
+    private void initialiesierPunkte() {
+        punkte.setPunkte(0);
+        punkte.setHighscore(punkte.ladeHighscore());
+        punkteTextView.setText(""+0);
+        highscoretextView.setText(""+punkte.getHighscore());
+    }
+
+    private void verwaltePunkte() {
         if(punkte.getPunkte()>punkte.ladeHighscore()) {
 
             punkte.setHighscore(punkte.getPunkte());
@@ -114,15 +119,17 @@ private void verwaltePunkte() {
         canvas.drawRect(futterX*kästchenGröße, futterY*kästchenGröße,futterX*kästchenGröße+kästchenGröße,futterY*kästchenGröße+kästchenGröße,p );
 
         for (int i = 0; i < snake.size(); i++) {
-                    Point point = snake.get(i);
+                    Point point;
 
                     if(i==0) {
                         p.setColor(Color.BLUE);
+                        point = snake.get(i);
                         canvas.drawRect(point.x * kästchenGröße, point.y * kästchenGröße, point.x * kästchenGröße + kästchenGröße, point.y * kästchenGröße + kästchenGröße, p);
                     }
 
-                    else if(i!=0){
+                    else {
                         p.setColor(Color.RED);
+                        point = snake.get(i);
                         canvas.drawRect(point.x * kästchenGröße, point.y * kästchenGröße, point.x * kästchenGröße + kästchenGröße, point.y * kästchenGröße + kästchenGröße, p);
                     }
         }
