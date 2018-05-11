@@ -44,11 +44,11 @@ public class SchlangeView extends SurfaceView implements SurfaceHolder.Callback{
      highscoretextView = mainActivity.getHighscoreTextView();
      futter = schlangeModel.getFutter();
      schlangeController = new SchlangeController(context);
-     initialiesierPunkte();
+     initialiesierePunkteStand();
      gameLoop();
     }
 
-    private void initialiesierPunkte() {
+    private void initialiesierePunkteStand() {
         punkte.setPunkte(0);
         punkte.setHighscore(punkte.ladeHighscore());
         punkteTextView.setText(""+0);

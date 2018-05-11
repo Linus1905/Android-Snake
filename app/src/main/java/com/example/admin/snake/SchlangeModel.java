@@ -54,7 +54,7 @@ public class SchlangeModel {
        futterY = futter.getFutterY();
 
        if (snake.getFirst().x == futterX && snake.getFirst().y == futterY) { // eat Apple
-           snake.addLast(new Point());
+           snake.addLast(new Point(snake.getLast().x-1,snake.getLast().y));
            futter.zufälligesEssen();
            aktuellePunkte = aktuellePunkte+1;
            punkte.setPunkte(aktuellePunkte);
